@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import br.com.zup.propostas.validation.CPFOrCNPJ;
+import br.com.zup.propostas.validation.Unique;
 
 @Entity
 public class Solicitante {
@@ -26,6 +27,7 @@ public class Solicitante {
 	
 	@CPFOrCNPJ
 	@NotBlank
+//	@Unique(domainClass = this.class, fieldName = "documento")
 	private String documento;
 	
 	@NotBlank
@@ -34,7 +36,10 @@ public class Solicitante {
 	@Positive
 	@NotNull
 	private Double salario;
+
+	public Solicitante() {
 	
+	}
 
 	public Solicitante(@NotBlank String nome, @Email @NotBlank String email){
 		this.nome = nome;

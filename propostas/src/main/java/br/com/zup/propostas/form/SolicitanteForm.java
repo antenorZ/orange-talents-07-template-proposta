@@ -7,6 +7,7 @@ import javax.validation.constraints.Positive;
 
 import br.com.zup.propostas.model.Solicitante;
 import br.com.zup.propostas.validation.CPFOrCNPJ;
+import br.com.zup.propostas.validation.Unique;
 
 public class SolicitanteForm {
 	@NotBlank
@@ -18,6 +19,7 @@ public class SolicitanteForm {
 	
 	@CPFOrCNPJ
 	@NotBlank
+//	@Unique(domainClass = Solicitante.class, fieldName = "documento")
 	private String documento;
 	
 	@NotBlank
