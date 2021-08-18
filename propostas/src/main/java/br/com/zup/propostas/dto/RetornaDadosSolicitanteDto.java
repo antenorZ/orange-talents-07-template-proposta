@@ -1,6 +1,7 @@
 package br.com.zup.propostas.dto;
 
 import br.com.zup.propostas.enums.ResultadoSolicitacao;
+import br.com.zup.propostas.model.Proposta;
 
 public class RetornaDadosSolicitanteDto {
 	private String documento;

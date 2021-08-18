@@ -10,12 +10,16 @@ import br.com.zup.propostas.integrations.ConsultaDadosSolicitanteClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import br.com.zup.propostas.dto.ErroDeFormularioDto;
+import br.com.zup.propostas.dto.PropostaDto;
 import br.com.zup.propostas.dto.RetornaDadosSolicitanteDto;
 import br.com.zup.propostas.enums.ResultadoSolicitacao;
 import br.com.zup.propostas.form.ConsultaDadosSolicitanteForm;
@@ -24,7 +28,6 @@ import br.com.zup.propostas.form.PropostaForm;
 import br.com.zup.propostas.model.Proposta;
 import br.com.zup.propostas.repository.PropostaRepository;
 import feign.FeignException;
-import br.com.zup.propostas.dto.ErroDeFormularioDto;
 
 
 @RestController
@@ -58,5 +61,14 @@ public class PropostasController{
 		propostaRepository.save(proposta);
 		URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
 		return ResponseEntity.created(uri).body(uri);
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity verDetalhesProposta(@PathVariable("id") Long id){
+		Optional<Proposta> proposta = propostaRepository.findById(id);
+		if(proposta.isPresent()) {
+			return ResponseEntity.ok(new PropostaDto(proposta.get()));
+		}
+		return ResponseEntity.notFound().build();
 	}
 }

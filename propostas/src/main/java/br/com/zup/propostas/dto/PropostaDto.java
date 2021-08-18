@@ -8,22 +8,19 @@ import br.com.zup.propostas.model.Proposta;
 public class PropostaDto {
 	@NotBlank
 	private String nome;
-	
-	@Email
-	@NotBlank
-	private String email;
-	
-	public Proposta toModel() {
-		return new Proposta(nome, email);
+
+	private String resultadoProposta;
+
+	public PropostaDto(Proposta proposta) {
+		this.nome = proposta.getNome();
+		this.resultadoProposta = proposta.getEstadoProposta().toString();
 	}
 
 	public String getNome() {
 		return nome;
 	}
 
-	public String getEmail() {
-		return email;
+	public String getResultadoProposta() {
+		return resultadoProposta;
 	}
-	
-	
 }
