@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
+//@EnableJpaRepositories(enableDefaultTransactions = false)
 public class PropostasApplication {
 
 	public static void main(String[] args) {

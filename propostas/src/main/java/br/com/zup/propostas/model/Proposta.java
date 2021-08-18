@@ -1,6 +1,8 @@
 package br.com.zup.propostas.model;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,6 +12,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 import br.com.zup.propostas.config.validation.CPFOrCNPJ;
+import br.com.zup.propostas.enums.EstadoProposta;
+import br.com.zup.propostas.enums.ResultadoSolicitacao;
 
 @Entity
 public class Proposta {
@@ -26,7 +30,6 @@ public class Proposta {
 	
 	@CPFOrCNPJ
 	@NotBlank
-//	@Unique(domainClass = this.class, fieldName = "documento")
 	private String documento;
 	
 	@NotBlank
@@ -35,6 +38,10 @@ public class Proposta {
 	@Positive
 	@NotNull
 	private Double salario;
+	
+	@NotNull
+    @Enumerated(EnumType.STRING)
+    private EstadoProposta estadoProposta;
 
 	public Proposta() {
 	
@@ -47,14 +54,18 @@ public class Proposta {
 
 	public Proposta(@NotBlank String nome, @Email @NotBlank String email, @NotBlank String documento,
 			@NotBlank String enderecoCompleto, @Positive @NotNull Double salario) {
-		super();
 		this.nome = nome;
 		this.email = email;
 		this.documento = documento;
 		this.enderecoCompleto = enderecoCompleto;
 		this.salario = salario;
+		this.estadoProposta = EstadoProposta.NAO_ELEGIVEL;
 	}
 
+	public void atualizaEstadoProposta(ResultadoSolicitacao resultadoSolicitacao) {
+        this.estadoProposta = resultadoSolicitacao.getEstadoProposta();
+    }
+	
 	public Long getId() {
 		return id;
 	}
@@ -77,6 +88,10 @@ public class Proposta {
 
 	public Double getSalario() {
 		return salario;
+	}
+
+	public EstadoProposta getEstadoProposta() {
+		return estadoProposta;
 	}
 	
 	

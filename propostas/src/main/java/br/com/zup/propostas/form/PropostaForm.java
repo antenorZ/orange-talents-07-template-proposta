@@ -18,7 +18,6 @@ public class PropostaForm {
 	
 	@CPFOrCNPJ
 	@NotBlank
-//	@Unique(domainClass = Solicitante.class, fieldName = "documento")
 	private String documento;
 	
 	@NotBlank
@@ -34,7 +33,6 @@ public class PropostaForm {
 
 	public PropostaForm(@NotBlank String nome, @Email @NotBlank String email, @NotBlank String documento,
 			@NotBlank String enderecoCompleto, @Positive @NotNull Double salario) {
-		super();
 		this.nome = nome;
 		this.email = email;
 		this.documento = documento;
