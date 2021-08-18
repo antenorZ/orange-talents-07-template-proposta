@@ -15,31 +15,31 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.zup.propostas.dto.SolicitanteDto;
-import br.com.zup.propostas.form.SolicitanteForm;
-import br.com.zup.propostas.model.Solicitante;
-import br.com.zup.propostas.repository.SolicitanteRepository;
+import br.com.zup.propostas.dto.PropostaDto;
+import br.com.zup.propostas.form.PropostaForm;
+import br.com.zup.propostas.model.Proposta;
+import br.com.zup.propostas.repository.PropostaRepository;
 
 import br.com.zup.propostas.dto.ErroDeFormularioDto;
 
 
 @RestController
-@RequestMapping("/solicitantes")
-public class SolicitantesController{
+@RequestMapping("/propostas")
+public class PropostasController{
 	
 	@Autowired
-	private SolicitanteRepository solicitanteRepository;
+	private PropostaRepository propostaRepository;
 	
 	@PostMapping
-	public ResponseEntity criar(@RequestBody @Valid SolicitanteForm solicitanteForm, UriComponentsBuilder uriBuilder){
-		Optional<Solicitante> possivelSolicitante = solicitanteRepository.findByDocumento(solicitanteForm.getDocumento());
+	public ResponseEntity criaNovaProposta(@RequestBody @Valid PropostaForm propostaForm, UriComponentsBuilder uriBuilder){
+		Optional<Proposta> possivelSolicitante = propostaRepository.findByDocumento(propostaForm.getDocumento());
 		if(possivelSolicitante.isPresent()) {
 			ErroDeFormularioDto erro = new ErroDeFormularioDto("documento", "já existe uma proposta cadastrada para esse documento");
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
 		}
-		Solicitante solicitante = solicitanteForm.toModel();
-		solicitanteRepository.save(solicitante);
-		URI uri = uriBuilder.path("/solicitantes/{id}").buildAndExpand(solicitante.getId()).toUri();
+		Proposta proposta = propostaForm.toModel();
+		propostaRepository.save(proposta);
+		URI uri = uriBuilder.path("/solicitantes/{id}").buildAndExpand(proposta.getId()).toUri();
 		return ResponseEntity.created(uri).body(uri);
 	}
 }

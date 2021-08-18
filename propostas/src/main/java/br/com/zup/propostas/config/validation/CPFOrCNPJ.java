@@ -1,4 +1,4 @@
-package br.com.zup.propostas.validation;
+package br.com.zup.propostas.config.validation;
 
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;

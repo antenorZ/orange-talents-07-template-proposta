@@ -3,9 +3,9 @@ package br.com.zup.propostas.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import br.com.zup.propostas.model.Solicitante;
+import br.com.zup.propostas.model.Proposta;
 
-public class SolicitanteDto {
+public class PropostaDto {
 	@NotBlank
 	private String nome;
 	
@@ -13,8 +13,8 @@ public class SolicitanteDto {
 	@NotBlank
 	private String email;
 	
-	public Solicitante toModel() {
-		return new Solicitante(nome, email);
+	public Proposta toModel() {
+		return new Proposta(nome, email);
 	}
 
 	public String getNome() {

@@ -1,15 +1,22 @@
-package br.com.zup.propostas.form;
+package br.com.zup.propostas.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-import br.com.zup.propostas.model.Solicitante;
-import br.com.zup.propostas.validation.CPFOrCNPJ;
-import br.com.zup.propostas.validation.Unique;
+import br.com.zup.propostas.config.validation.CPFOrCNPJ;
 
-public class SolicitanteForm {
+@Entity
+public class Proposta {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	
 	@NotBlank
 	private String nome;
 	
@@ -19,7 +26,7 @@ public class SolicitanteForm {
 	
 	@CPFOrCNPJ
 	@NotBlank
-//	@Unique(domainClass = Solicitante.class, fieldName = "documento")
+//	@Unique(domainClass = this.class, fieldName = "documento")
 	private String documento;
 	
 	@NotBlank
@@ -29,11 +36,16 @@ public class SolicitanteForm {
 	@NotNull
 	private Double salario;
 
-	public SolicitanteForm() {
-		
+	public Proposta() {
+	
 	}
 
-	public SolicitanteForm(@NotBlank String nome, @Email @NotBlank String email, @NotBlank String documento,
+	public Proposta(@NotBlank String nome, @Email @NotBlank String email){
+		this.nome = nome;
+		this.email = email;
+	}
+
+	public Proposta(@NotBlank String nome, @Email @NotBlank String email, @NotBlank String documento,
 			@NotBlank String enderecoCompleto, @Positive @NotNull Double salario) {
 		super();
 		this.nome = nome;
@@ -43,10 +55,10 @@ public class SolicitanteForm {
 		this.salario = salario;
 	}
 
-	public Solicitante toModel() {
-		return new Solicitante(nome, email, documento, enderecoCompleto, salario);
+	public Long getId() {
+		return id;
 	}
-	
+
 	public String getNome() {
 		return nome;
 	}
@@ -66,7 +78,6 @@ public class SolicitanteForm {
 	public Double getSalario() {
 		return salario;
 	}
-	
 	
 	
 }

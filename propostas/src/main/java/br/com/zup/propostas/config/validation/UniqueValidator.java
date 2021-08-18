@@ -1,4 +1,4 @@
-package br.com.zup.propostas.validation;
+package br.com.zup.propostas.config.validation;
 
 import java.util.List;
 
