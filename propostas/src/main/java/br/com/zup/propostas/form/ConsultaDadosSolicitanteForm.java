@@ -20,8 +20,6 @@ public class ConsultaDadosSolicitanteForm {
 	@JsonProperty
 	private String idProposta;
 
-
-
 	public ConsultaDadosSolicitanteForm(Proposta proposta) {
 		this.documentoSolicitante = proposta.getDocumento();
 		this.nomeSolicitante = proposta.getNome();

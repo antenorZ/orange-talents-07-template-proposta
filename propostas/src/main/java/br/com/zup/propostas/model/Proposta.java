@@ -1,11 +1,6 @@
 package br.com.zup.propostas.model;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -43,6 +38,9 @@ public class Proposta {
     @Enumerated(EnumType.STRING)
     private EstadoProposta estadoProposta;
 
+	@OneToOne(cascade = {CascadeType.MERGE})
+	private Cartao cartaoRelacionado;
+
 	public Proposta() {
 	
 	}
@@ -65,6 +63,10 @@ public class Proposta {
 	public void atualizaEstadoProposta(ResultadoSolicitacao resultadoSolicitacao) {
         this.estadoProposta = resultadoSolicitacao.getEstadoProposta();
     }
+
+    public void associaCartao(Cartao cartao){
+		this.cartaoRelacionado = cartao;
+	}
 	
 	public Long getId() {
 		return id;
@@ -93,6 +95,8 @@ public class Proposta {
 	public EstadoProposta getEstadoProposta() {
 		return estadoProposta;
 	}
-	
-	
+
+	public Cartao getCartaoRelacionado() {
+		return cartaoRelacionado;
+	}
 }

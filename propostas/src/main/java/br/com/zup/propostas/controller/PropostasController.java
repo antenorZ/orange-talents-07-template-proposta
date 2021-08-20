@@ -6,7 +6,13 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import br.com.zup.propostas.dto.RetornaDadosCartaoDto;
+import br.com.zup.propostas.enums.EstadoProposta;
+import br.com.zup.propostas.integrations.AssociaCartaoPropostaClient;
 import br.com.zup.propostas.integrations.ConsultaDadosSolicitanteClient;
+import br.com.zup.propostas.model.Cartao;
+import br.com.zup.propostas.repository.CartaoRepository;
+import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +45,12 @@ public class PropostasController{
 	
 	@Autowired
 	private ConsultaDadosSolicitanteClient consultaDadosApi;
+
+	@Autowired
+	private AssociaCartaoPropostaClient associaCartaoApi;
+
+	@Autowired
+	private CartaoRepository cartaoRepository;
 	
 	@PostMapping
 	@Transactional
@@ -53,12 +65,19 @@ public class PropostasController{
 		
 		try {
 			ConsultaDadosSolicitanteForm consultaDados = new ConsultaDadosSolicitanteForm(proposta);
-			RetornaDadosSolicitanteDto retornaDados = consultaDadosApi.consultaDadosSolicitanteApi(consultaDados);
-			proposta.atualizaEstadoProposta(retornaDados.getResultadoSolicitacao());
+			RetornaDadosSolicitanteDto retornaDadosSolicitante = consultaDadosApi.consultaDadosSolicitanteApi(consultaDados);
+			proposta.atualizaEstadoProposta(retornaDadosSolicitante.getResultadoSolicitacao());
+
+			RetornaDadosCartaoDto retornaDadosCartao = associaCartaoApi.criaCartao(consultaDados);
+			Cartao novoCartaoRetornado = retornaDadosCartao.toModel();
+			cartaoRepository.save(novoCartaoRetornado);
+			proposta.associaCartao(novoCartaoRetornado);
+
 		}catch(FeignException e){
 			proposta.atualizaEstadoProposta(ResultadoSolicitacao.COM_RESTRICAO);
 		}
 		propostaRepository.save(proposta);
+
 		URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
 		return ResponseEntity.created(uri).body(uri);
 	}
