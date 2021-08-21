@@ -67,19 +67,16 @@ public class PropostasController{
 			ConsultaDadosSolicitanteForm consultaDados = new ConsultaDadosSolicitanteForm(proposta);
 			RetornaDadosSolicitanteDto retornaDadosSolicitante = consultaDadosApi.consultaDadosSolicitanteApi(consultaDados);
 			proposta.atualizaEstadoProposta(retornaDadosSolicitante.getResultadoSolicitacao());
-
 			RetornaDadosCartaoDto retornaDadosCartao = associaCartaoApi.criaCartao(consultaDados);
 			Cartao novoCartaoRetornado = retornaDadosCartao.toModel();
 			cartaoRepository.save(novoCartaoRetornado);
-			proposta.associaCartao(novoCartaoRetornado);
-
 		}catch(FeignException e){
 			proposta.atualizaEstadoProposta(ResultadoSolicitacao.COM_RESTRICAO);
 		}
 		propostaRepository.save(proposta);
 
 		URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
-		return ResponseEntity.created(uri).body(uri);
+		return ResponseEntity.created(uri).build();
 	}
 
 	@GetMapping("/{id}")

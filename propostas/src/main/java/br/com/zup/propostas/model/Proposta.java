@@ -15,25 +15,25 @@ public class Proposta {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@NotBlank
 	private String nome;
-	
+
 	@Email
 	@NotBlank
 	private String email;
-	
+
 	@CPFOrCNPJ
 	@NotBlank
 	private String documento;
-	
+
 	@NotBlank
 	private String enderecoCompleto;
-	
+
 	@Positive
 	@NotNull
 	private Double salario;
-	
+
 	@NotNull
     @Enumerated(EnumType.STRING)
     private EstadoProposta estadoProposta;
@@ -42,7 +42,7 @@ public class Proposta {
 	private Cartao cartaoRelacionado;
 
 	public Proposta() {
-	
+
 	}
 
 	public Proposta(@NotBlank String nome, @Email @NotBlank String email){
@@ -67,7 +67,7 @@ public class Proposta {
     public void associaCartao(Cartao cartao){
 		this.cartaoRelacionado = cartao;
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
