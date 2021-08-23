@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface PropostaRepository extends JpaRepository<Proposta, Long>{
 	Optional<Proposta> findByDocumento(String documento);
 
-	List<Proposta> findByEstadoPropostaAndCartaoRelacionado(Enum<EstadoProposta> estadoProposta, Long idCartao);
+	List<Proposta> findFirst5ByEstadoPropostaAndCartaoRelacionado(Enum<EstadoProposta> estadoProposta, Long idCartao);
 
 	@Query("SELECT p FROM Proposta p WHERE p.estadoProposta = 'ELEGIVEL' and p.cartaoRelacionado = NULL")
 	List<Proposta> findEligibleProposesWithoutCard();

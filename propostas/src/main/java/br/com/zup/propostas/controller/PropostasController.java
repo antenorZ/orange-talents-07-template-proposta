@@ -3,6 +3,7 @@ package br.com.zup.propostas.controller;
 import java.net.URI;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,9 +53,11 @@ public class PropostasController{
 
 	@Autowired
 	private CartaoRepository cartaoRepository;
-	
+
+	@Autowired
+	private TransactionTemplate transactionTemplate;
+
 	@PostMapping
-	@Transactional
 	public ResponseEntity criaNovaProposta(@RequestBody @Valid PropostaForm propostaForm, UriComponentsBuilder uriBuilder){
 		Optional<Proposta> possivelSolicitante = propostaRepository.findByDocumento(propostaForm.getDocumento());
 		if(possivelSolicitante.isPresent()) {
@@ -61,19 +65,17 @@ public class PropostasController{
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
 		}
 		Proposta proposta = propostaForm.toModel();
-		propostaRepository.save(proposta);
+
+		transactionTemplate.execute(status -> propostaRepository.save(proposta));
 		
 		try {
 			ConsultaDadosSolicitanteForm consultaDados = new ConsultaDadosSolicitanteForm(proposta);
 			RetornaDadosSolicitanteDto retornaDadosSolicitante = consultaDadosApi.consultaDadosSolicitanteApi(consultaDados);
 			proposta.atualizaEstadoProposta(retornaDadosSolicitante.getResultadoSolicitacao());
-			RetornaDadosCartaoDto retornaDadosCartao = associaCartaoApi.criaCartao(consultaDados);
-			Cartao novoCartaoRetornado = retornaDadosCartao.toModel();
-			cartaoRepository.save(novoCartaoRetornado);
 		}catch(FeignException e){
 			proposta.atualizaEstadoProposta(ResultadoSolicitacao.COM_RESTRICAO);
 		}
-		propostaRepository.save(proposta);
+		transactionTemplate.execute(status -> propostaRepository.save(proposta));
 
 		URI uri = uriBuilder.path("/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
 		return ResponseEntity.created(uri).build();

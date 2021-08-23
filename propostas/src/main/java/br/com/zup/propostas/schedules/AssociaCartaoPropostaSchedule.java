@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -30,17 +31,18 @@ public class AssociaCartaoPropostaSchedule {
     @Autowired
     private AssociaCartaoPropostaClient associaCartaoApi;
 
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
     @Scheduled(fixedRate = 5000)
-    @Transactional
     public void associaCartaoPeriodicamente(){
-        List<Proposta> propostasSemCartao = propostaRepository.findByEstadoPropostaAndCartaoRelacionado(EstadoProposta.ELEGIVEL, null);
+        List<Proposta> propostasSemCartao = propostaRepository.findFirst5ByEstadoPropostaAndCartaoRelacionado(EstadoProposta.ELEGIVEL, null);
         for (Proposta propostaSemCartao: propostasSemCartao){
             try {
                 RetornaDadosCartaoDto retornaDadosCartao = associaCartaoApi.associaCartao(propostaSemCartao.getId().toString());
                 Cartao cartaoRetornado = retornaDadosCartao.toModel();
                 propostaSemCartao.associaCartao(cartaoRetornado);
-                cartaoRepository.save(cartaoRetornado);
-                propostaRepository.save(propostaSemCartao);
+                transactionTemplate.execute(status -> propostaRepository.save(propostaSemCartao));
             }catch (FeignException e){
                 e.printStackTrace();
                 System.out.println("Erro no processamento do cartao");

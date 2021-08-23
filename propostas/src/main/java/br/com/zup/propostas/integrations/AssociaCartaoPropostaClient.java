@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "associaCartaoProposta", url = "http://localhost:8888")
+@FeignClient(name = "associaCartaoProposta", url = "${contas.host}")
 public interface AssociaCartaoPropostaClient {
-    @PostMapping("/api/cartoes")
-    RetornaDadosCartaoDto criaCartao(ConsultaDadosSolicitanteForm consultaDadosSolicitanteForm);
+//    @PostMapping("${contas.associaCartao}")
+//    RetornaDadosCartaoDto criaCartao(ConsultaDadosSolicitanteForm consultaDadosSolicitanteForm);
 
-    @GetMapping("/api/cartoes")
+    @GetMapping("${contas.associaCartao}")
     RetornaDadosCartaoDto associaCartao(@RequestParam String idProposta);
 }
