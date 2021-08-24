@@ -72,7 +72,7 @@ public class PropostasController{
 			ConsultaDadosSolicitanteForm consultaDados = new ConsultaDadosSolicitanteForm(proposta);
 			RetornaDadosSolicitanteDto retornaDadosSolicitante = consultaDadosApi.consultaDadosSolicitanteApi(consultaDados);
 			proposta.atualizaEstadoProposta(retornaDadosSolicitante.getResultadoSolicitacao());
-		}catch(FeignException e){
+		}catch(FeignException.FeignClientException.Unauthorized e){
 			proposta.atualizaEstadoProposta(ResultadoSolicitacao.COM_RESTRICAO);
 		}
 		transactionTemplate.execute(status -> propostaRepository.save(proposta));

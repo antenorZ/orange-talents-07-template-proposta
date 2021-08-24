@@ -20,7 +20,6 @@ public class Biometria {
 
     private LocalDateTime momentoCadastro;
 
-    @NotNull
     private String fingerprint;
 
     public Biometria(Cartao cartaoRelacionado, String fingerprint) {
@@ -33,6 +32,10 @@ public class Biometria {
         Base64.Encoder encoder = Base64.getEncoder();
         byte[] encoded = encoder.encode(fingerprint.getBytes(StandardCharsets.UTF_8));
         return new String(encoded);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Cartao getCartaoRelacionado() {
