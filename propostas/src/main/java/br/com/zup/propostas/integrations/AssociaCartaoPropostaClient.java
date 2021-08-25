@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name = "associaCartaoProposta", url = "${contas.host}")
 public interface AssociaCartaoPropostaClient {
-//    @PostMapping("${contas.associaCartao}")
-//    RetornaDadosCartaoDto criaCartao(ConsultaDadosSolicitanteForm consultaDadosSolicitanteForm);
 
     @GetMapping("${contas.associaCartao}")
     RetornaDadosCartaoDto associaCartao(@RequestParam String idProposta);

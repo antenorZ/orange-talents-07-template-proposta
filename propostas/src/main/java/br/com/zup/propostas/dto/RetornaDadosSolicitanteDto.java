@@ -9,7 +9,8 @@ public class RetornaDadosSolicitanteDto {
 	private ResultadoSolicitacao resultadoSolicitacao;
 	private String idProposta;
 
-	public RetornaDadosSolicitanteDto() {
+	public RetornaDadosSolicitanteDto(){
+
 	}
 
 	public RetornaDadosSolicitanteDto(String documento, String nome, ResultadoSolicitacao resultadoSolicitacao,

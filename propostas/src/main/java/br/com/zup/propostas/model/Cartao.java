@@ -1,5 +1,6 @@
 package br.com.zup.propostas.model;
 
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ public class Cartao {
     private LocalDateTime dataEmissao;
 
     private String titular;
+
+//    @Enumerated(EnumType.STRING)
+//    private EstadoCartao estadoCartao;
 
     public Cartao() {
     }
@@ -43,8 +47,10 @@ public class Cartao {
         return titular;
     }
 
-    //    @OneToMany(mappedBy = "cartaoRelacionado")
+//    @OneToMany(mappedBy = "cartaoRelacionado")
 //    private List<Bloqueio> bloqueios = new ArrayList<>();
+//
+
 //
 //    @OneToMany(mappedBy = "cartaoRelacionado")
 //    private List<Aviso> avisos = new ArrayList<>();

@@ -4,6 +4,7 @@ import br.com.zup.propostas.dto.ErroDeFormularioDto;
 import br.com.zup.propostas.dto.RetornaDadosSolicitanteDto;
 import br.com.zup.propostas.enums.ResultadoSolicitacao;
 import br.com.zup.propostas.form.BiometriaForm;
+import br.com.zup.propostas.form.BloqueioForm;
 import br.com.zup.propostas.form.ConsultaDadosSolicitanteForm;
 import br.com.zup.propostas.form.PropostaForm;
 import br.com.zup.propostas.model.Biometria;
@@ -45,11 +46,23 @@ public class CartoesController {
         if(cartao.isPresent()){
             Biometria biometria = biometriaForm.toModel(cartao.get());
             transactionTemplate.execute(status-> biometriaRepository.save(biometria));
-//            URI uri = uriBuilder.path("/{numeroCartao}/biometria").buildAndExpand(cartao.get().getId()).toUri();
+            URI uri = uriBuilder.path("/{numeroCartao}/biometria").buildAndExpand(cartao.get().getId()).toUri();
             return ResponseEntity.ok().build();
         }
         else{
             return ResponseEntity.notFound().build();
         }
     }
+
+    @PostMapping("/{numeroCartao}/bloqueio")
+    public ResponseEntity bloqueiaCartao(@PathVariable("numeroCartao") String numeroCartao, @RequestBody @Valid BloqueioForm bloqueioForm, UriComponentsBuilder uriBuilder) {
+        Optional<Cartao> cartao = cartaoRepository.findBynumeroCartao(numeroCartao);
+        if(cartao.isPresent()){
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }
