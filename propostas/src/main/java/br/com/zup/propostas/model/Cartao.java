@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import static javax.persistence.CascadeType.*;
+
 @Entity
 public class Cartao {
     @Id
@@ -19,8 +21,8 @@ public class Cartao {
 
     private String titular;
 
-//    @Enumerated(EnumType.STRING)
-//    private EstadoCartao estadoCartao;
+    @OneToMany(mappedBy = "cartaoRelacionado", cascade = {MERGE, PERSIST, REMOVE})
+    private List<Bloqueio> bloqueios = new ArrayList<>();
 
     public Cartao() {
     }
@@ -47,27 +49,26 @@ public class Cartao {
         return titular;
     }
 
-//    @OneToMany(mappedBy = "cartaoRelacionado")
-//    private List<Bloqueio> bloqueios = new ArrayList<>();
-//
+    public List<Bloqueio> getBloqueios() {
+        return bloqueios;
+    }
 
-//
-//    @OneToMany(mappedBy = "cartaoRelacionado")
-//    private List<Aviso> avisos = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "cartaoRelacionado")
-//    private List<Carteira> carteiras = new ArrayList<>();
-//
-//    @OneToMany(mappedBy = "cartaoRelacionado")
-//    private List<Parcela> parcelas = new ArrayList<>();
-//
-//    private Integer limite;
-//
-//    @OneToMany(mappedBy = "cartaoRelacionado")
-//    private List<Renegociacao> renegociacoes = new ArrayList<>();
-//
-//    @OneToOne
-//    private Vencimento vencimento;
+    @OneToMany(mappedBy = "cartaoRelacionado")
+    private List<Aviso> avisos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cartaoRelacionado")
+    private List<Carteira> carteiras = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cartaoRelacionado")
+    private List<Parcela> parcelas = new ArrayList<>();
+
+    private Integer limite;
+
+    @OneToMany(mappedBy = "cartaoRelacionado")
+    private List<Renegociacao> renegociacoes = new ArrayList<>();
+
+    @OneToOne
+    private Vencimento vencimento;
 
 
 }

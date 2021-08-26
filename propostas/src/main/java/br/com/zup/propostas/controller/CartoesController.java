@@ -1,6 +1,8 @@
 package br.com.zup.propostas.controller;
 
+import br.com.zup.propostas.dto.CartaoDto;
 import br.com.zup.propostas.dto.ErroDeFormularioDto;
+import br.com.zup.propostas.dto.PropostaDto;
 import br.com.zup.propostas.dto.RetornaDadosSolicitanteDto;
 import br.com.zup.propostas.enums.ResultadoSolicitacao;
 import br.com.zup.propostas.form.BiometriaForm;
@@ -17,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.transaction.Transactional;
@@ -63,6 +62,15 @@ public class CartoesController {
         else{
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/{numeroCartao}/detalhesCartao")
+    public ResponseEntity verDetalhesCartao(@PathVariable("numeroCartao") String numeroCartao){
+        Optional<Cartao> cartao = cartaoRepository.findBynumeroCartao(numeroCartao);
+        if(cartao.isPresent()){
+            return ResponseEntity.ok(new CartaoDto(cartao.get()));
+        }
+        return ResponseEntity.notFound().build();
     }
 
 }

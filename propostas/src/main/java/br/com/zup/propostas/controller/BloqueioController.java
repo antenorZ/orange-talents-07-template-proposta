@@ -45,23 +45,24 @@ public class BloqueioController{
     private BloqueiaCartaoClient bloqueiaCartaoApi;
 
     @PostMapping
-    public ResponseEntity<?> bloqueiaCartao(@PathVariable String id, @RequestBody @Valid BloqueioForm bloqueioForm, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<?> bloqueiaCartao(@PathVariable String id, @RequestHeader("X-Forward-For") String xForwardFor, @RequestBody @Valid BloqueioForm bloqueioForm, UriComponentsBuilder uriBuilder){
         Optional<Cartao> possivelCartao = cartaoRepository.findBynumeroCartao(id);
         if(!possivelCartao.isPresent()) {
             ErroDeFormularioDto erro = new ErroDeFormularioDto("id", "Nenhum cartao foi encotrado com este identificador");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
         }
         Cartao possivelCartaoBloqueado = possivelCartao.get();
-        Bloqueio possivelBloqueioRealizado = bloqueioForm.toModel(possivelCartaoBloqueado);
+        String ipCliente = xForwardFor.split(",")[0];
+        Bloqueio possivelBloqueioRealizado = bloqueioForm.toModel(possivelCartaoBloqueado, ipCliente);
         try {
             RetornaDadosBloqueioCartaoDto retornaDadosBloqueioCartaoDto = bloqueiaCartaoApi.bloqueiaCartao(id, bloqueioForm);
             possivelBloqueioRealizado.atualizaEstadoBloqueio(retornaDadosBloqueioCartaoDto.getResultadoBloqueio());
         }catch(FeignException.FeignClientException.UnprocessableEntity e){
             possivelBloqueioRealizado.atualizaEstadoBloqueio(ResultadoBloqueio.FALHA);
         }
-        Bloqueio bloqueioRealizado = bloqueioForm.toModel(possivelCartaoBloqueado);
+        Bloqueio bloqueioRealizado = bloqueioForm.toModel(possivelCartaoBloqueado, ipCliente);
         transactionTemplate.execute(status -> bloqueioRepository.save(possivelBloqueioRealizado));
         URI uri = uriBuilder.path("/bloqueio/{id}").buildAndExpand(possivelCartaoBloqueado.getId()).toUri();
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.ok().build();
     }
 }

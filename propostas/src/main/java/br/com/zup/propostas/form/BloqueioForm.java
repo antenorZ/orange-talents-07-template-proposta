@@ -4,14 +4,14 @@ import br.com.zup.propostas.model.Bloqueio;
 import br.com.zup.propostas.model.Cartao;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 
 public class BloqueioForm {
+    @NotBlank
     private String sistemaResponsavel;
 
-    private String ipCliente;
-
-    public Bloqueio toModel(Cartao cartao){
-        return new Bloqueio(sistemaResponsavel, cartao);
+    public Bloqueio toModel(Cartao cartao, String ipCliente){
+        return new Bloqueio(sistemaResponsavel, cartao, ipCliente);
     }
 
     public String getSistemaResponsavel() {

@@ -24,7 +24,7 @@ public class Bloqueio {
     @Enumerated(EnumType.STRING)
     private EstadoBloqueio estadoBloqueio;
 
-    public Bloqueio(String sistemaResponsavel, Cartao cartaoRelacionado) {
+    public Bloqueio(String sistemaResponsavel, Cartao cartaoRelacionado, String ipCliente) {
         this.dataBloqueio = LocalDateTime.now();
         this.ipCliente = ipCliente;
         this.sistemaResponsavel = sistemaResponsavel;
