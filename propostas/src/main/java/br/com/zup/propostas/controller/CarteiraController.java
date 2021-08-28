@@ -1,16 +1,18 @@
 package br.com.zup.propostas.controller;
 
 import br.com.zup.propostas.dto.ErroDeFormularioDto;
+import br.com.zup.propostas.dto.RetornaDadosCarteiraDto;
 import br.com.zup.propostas.dto.RetornaDadosViagemDto;
 import br.com.zup.propostas.enums.ResultadoViagem;
-import br.com.zup.propostas.form.BiometriaForm;
+import br.com.zup.propostas.form.CarteiraForm;
 import br.com.zup.propostas.form.ViagemForm;
 import br.com.zup.propostas.integrations.AgendaViagemClient;
-import br.com.zup.propostas.model.Biometria;
-import br.com.zup.propostas.model.Bloqueio;
+import br.com.zup.propostas.integrations.AssociaCarteiraClient;
 import br.com.zup.propostas.model.Cartao;
+import br.com.zup.propostas.model.Carteira;
 import br.com.zup.propostas.model.Viagem;
 import br.com.zup.propostas.repository.CartaoRepository;
+import br.com.zup.propostas.repository.CarteiraRepository;
 import br.com.zup.propostas.repository.ViagemRepository;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,12 @@ import java.net.URI;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/viagens")
-public class ViagemController {
+public class CarteiraController {
+    @Autowired
+    private CarteiraRepository carteiraRepository;
 
     @Autowired
-    private ViagemRepository viagemRepository;
-
-    @Autowired
-    private AgendaViagemClient agendaViagemClient;
+    private AssociaCarteiraClient associaCarteiraClient;
 
     @Autowired
     private CartaoRepository cartaoRepository;
@@ -40,24 +40,25 @@ public class ViagemController {
     @Autowired
     private TransactionTemplate transactionTemplate;
 
-    public ResponseEntity<?> criaAvisoViagem(@PathVariable("id") String id,  @RequestHeader("User-Agent") String userAgent, @RequestHeader("X-Forward-For") String xForwardFor, @RequestBody @Valid ViagemForm viagemForm, UriComponentsBuilder uriBuilder){
+    @PostMapping("/{id}/carteiras")
+    public ResponseEntity<?> criaAssociacaoCarteira(@PathVariable("id") String id, @RequestHeader("User-Agent") String userAgent, @RequestHeader("X-Forward-For") String xForwardFor, @RequestBody @Valid CarteiraForm carteiraForm, UriComponentsBuilder uriBuilder){
         Optional<Cartao> cartao = cartaoRepository.findBynumeroCartao(id);
         if(!cartao.isPresent()){
             ErroDeFormularioDto erro = new ErroDeFormularioDto("id", "Nenhum cartao foi encotrado com este identificador");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
         }
         Cartao cartaoPresente = cartao.get();
-        String ipCliente = xForwardFor.split(",")[0];
-        Viagem possivelAvisoViagem = viagemForm.toModel(cartaoPresente, ipCliente, userAgent);
+        Carteira carteira = carteiraForm.toModel(cartaoPresente);
         try{
-            RetornaDadosViagemDto retornaDadosViagem = agendaViagemClient.agendaViagem(id, viagemForm);
-            possivelAvisoViagem.atualizaEstadoViagem(retornaDadosViagem.getResultadoViagem());
+            RetornaDadosCarteiraDto dadosCarteira = associaCarteiraClient.associaCarteira(id, carteiraForm);
+
         } catch(FeignException.FeignClientException.InternalServerError e){
-            possivelAvisoViagem.atualizaEstadoViagem(ResultadoViagem.FALHA);
+            ErroDeFormularioDto erro = new ErroDeFormularioDto("idCartao", "Um erro de negocio foi identificado");
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
         }
-        Viagem avisoViagem = viagemForm.toModel(cartaoPresente, ipCliente, userAgent);
-        transactionTemplate.execute(status -> viagemRepository.save(avisoViagem));
-        URI uri = uriBuilder.path("/viagens/{id}").buildAndExpand(avisoViagem.getId()).toUri();
+        Carteira carteiraParaSalvar = carteiraForm.toModel(cartaoPresente);
+        transactionTemplate.execute(status -> carteiraRepository.save(carteiraParaSalvar));
+        URI uri = uriBuilder.path("/carteiras/{id}").buildAndExpand(carteiraParaSalvar.getId()).toUri();
         return ResponseEntity.ok().build();
     }
 }
