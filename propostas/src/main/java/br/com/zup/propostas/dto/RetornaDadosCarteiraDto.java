@@ -1,23 +1,26 @@
 package br.com.zup.propostas.dto;
 
 import br.com.zup.propostas.enums.EstadoCarteira;
+import br.com.zup.propostas.enums.ResultadoCarteira;
+import br.com.zup.propostas.enums.ResultadoViagem;
 
 public class RetornaDadosCarteiraDto {
 
-    private EstadoCarteira estadoCarteira;
+    private ResultadoCarteira resultadoCarteira;
 
     private String id;
 
-    public RetornaDadosCarteiraDto(EstadoCarteira estadoCarteira, String id) {
-        this.estadoCarteira = estadoCarteira;
+    public RetornaDadosCarteiraDto(ResultadoCarteira resultadoCarteira, String id) {
+        this.resultadoCarteira = resultadoCarteira;
         this.id = id;
     }
 
-    public EstadoCarteira getEstadoCarteira() {
-        return estadoCarteira;
+    public ResultadoCarteira getResultadoCarteira() {
+        return resultadoCarteira;
     }
 
     public String getId() {
         return id;
     }
+
 }

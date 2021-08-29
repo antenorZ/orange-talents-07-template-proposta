@@ -51,7 +51,7 @@ public class CarteiraController {
         Carteira carteira = carteiraForm.toModel(cartaoPresente);
         try{
             RetornaDadosCarteiraDto dadosCarteira = associaCarteiraClient.associaCarteira(id, carteiraForm);
-
+            carteira.atualizaEstadoCarteira(dadosCarteira.getResultadoCarteira());
         } catch(FeignException.FeignClientException.InternalServerError e){
             ErroDeFormularioDto erro = new ErroDeFormularioDto("idCartao", "Um erro de negocio foi identificado");
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);

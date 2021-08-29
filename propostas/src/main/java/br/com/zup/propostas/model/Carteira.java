@@ -1,5 +1,8 @@
 package br.com.zup.propostas.model;
 
+import br.com.zup.propostas.enums.EstadoCarteira;
+import br.com.zup.propostas.enums.ResultadoCarteira;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -23,12 +26,18 @@ public class Carteira {
     @ManyToOne
     private Cartao cartaoRelacionado;
 
+    private EstadoCarteira estadoCarteira;
+
     public Carteira(String nome, String email, String emissor, Cartao cartaoRelacionado) {
         this.nome = nome;
         this.email = email;
         this.dataAssociacao = LocalDateTime.now();
         this.emissor = emissor;
         this.cartaoRelacionado = cartaoRelacionado;
+    }
+
+    public void atualizaEstadoCarteira(ResultadoCarteira resultadoCarteira){
+        this.estadoCarteira = resultadoCarteira.getEstadoCarteira();
     }
 
     public Long getId() {
@@ -55,5 +64,7 @@ public class Carteira {
         return nome;
     }
 
-
+    public EstadoCarteira getEstadoCarteira() {
+        return estadoCarteira;
+    }
 }
