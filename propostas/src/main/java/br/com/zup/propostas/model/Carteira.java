@@ -21,18 +21,18 @@ public class Carteira {
 
     private LocalDateTime dataAssociacao;
 
-    private String emissor;
+//    private String emissor;
 
     @ManyToOne
     private Cartao cartaoRelacionado;
 
     private EstadoCarteira estadoCarteira;
 
-    public Carteira(String nome, String email, String emissor, Cartao cartaoRelacionado) {
+    public Carteira(String nome, String email, Cartao cartaoRelacionado) {
         this.nome = nome;
         this.email = email;
         this.dataAssociacao = LocalDateTime.now();
-        this.emissor = emissor;
+//        this.emissor = emissor;
         this.cartaoRelacionado = cartaoRelacionado;
     }
 
@@ -52,9 +52,9 @@ public class Carteira {
         return dataAssociacao;
     }
 
-    public String getEmissor() {
-        return emissor;
-    }
+//    public String getEmissor() {
+//        return emissor;
+//    }
 
     public Cartao getCartaoRelacionado() {
         return cartaoRelacionado;

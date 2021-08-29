@@ -4,24 +4,17 @@ import br.com.zup.propostas.model.Cartao;
 import br.com.zup.propostas.model.Carteira;
 
 public class CarteiraForm {
-    private String nome;
-
     private String email;
 
     private String carteira;
 
     public Carteira toModel(Cartao cartao){
-        return new Carteira(nome, email, carteira, cartao);
+        return new Carteira(carteira, email, cartao);
     }
 
-    public CarteiraForm(String nome, String email, String carteira) {
-        this.nome = nome;
+    public CarteiraForm(String email, String carteira) {
         this.email = email;
         this.carteira = carteira;
-    }
-
-    public String getNome() {
-        return nome;
     }
 
     public String getEmail() {
