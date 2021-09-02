@@ -61,7 +61,7 @@ public class BloqueioController{
             possivelBloqueioRealizado.atualizaEstadoBloqueio(ResultadoBloqueio.FALHA);
         }
         Bloqueio bloqueioRealizado = bloqueioForm.toModel(possivelCartaoBloqueado, ipCliente);
-        transactionTemplate.execute(status -> bloqueioRepository.save(possivelBloqueioRealizado));
+        transactionTemplate.execute(status -> bloqueioRepository.save(bloqueioRealizado));
         URI uri = uriBuilder.path("/bloqueio/{id}").buildAndExpand(possivelCartaoBloqueado.getId()).toUri();
         return ResponseEntity.ok().build();
     }
